@@ -22,7 +22,12 @@ class MaskedConv2d(nn.Conv2d):
 class ConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
         super(ConvnetBlock, self).__init__(*args, **kwargs)
-        self.filters = filters
+
+        self.conv1 = nn.Conv2d(filters, filters, (3, 3), padding=(1, 1))
+        self.bn1 = nn.BatchNorm2d(filters)
+
+        self.conv2 = nn.Conv2d(filters, filters, (3, 3), padding=(1, 1))
+        self.bn2 = nn.BatchNorm2d(filters)
 
     def forward(self, x):
         #
@@ -32,11 +37,11 @@ class ConvnetBlock(nn.Module):
 
         batch_size, num_channels, height, width = x.shape
 
-        u = nn.Conv2d(num_channels, num_channels, (3, 3), padding=(1, 1))(x)
-        u = F.relu(nn.BatchNorm2d(num_channels)(u))
+        u = self.conv1(x)
+        u = F.relu(self.bn1(u))
 
-        z = nn.Conv2d(num_channels, self.filters, (3, 3), padding=(1, 1))(u)
-        z = F.relu(x + nn.BatchNorm2d(num_channels)(z))
+        z = self.conv2(u)
+        z = F.relu(x + self.bn2(z))
 
         return z
 
