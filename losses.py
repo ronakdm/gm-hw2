@@ -48,9 +48,14 @@ def mc_gaussian_elbo(x1, x2, z, sigma, mu, logvar):
         mu, torch.diag_embed(torch.exp(logvar))
     ).log_prob(z)
     d = z.shape[1]
-    log_prior = torch.distributions.MultivariateNormal(
-        torch.zeros(d), torch.eye(d)
-    ).log_prob(z)
+    if torch.cuda.is_available():
+        log_prior = torch.distributions.MultivariateNormal(
+            torch.zeros(d).cuda(), torch.eye(d).cuda()
+        ).log_prob(z)
+    else:
+        log_prior = torch.distributions.MultivariateNormal(
+            torch.zeros(d), torch.eye(d)
+        ).log_prob(z)
 
     divergence = torch.sum(log_posterior - log_prior)
 
