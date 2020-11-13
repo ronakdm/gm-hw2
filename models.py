@@ -22,6 +22,7 @@ class MaskedConv2d(nn.Conv2d):
 class ConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
         super(ConvnetBlock, self).__init__(*args, **kwargs)
+        self.filters = filters
 
     def forward(self, x):
 
@@ -35,7 +36,7 @@ class ConvnetBlock(nn.Module):
         u = nn.Conv2d(num_channels, num_channels, (3, 3), padding=(1, 1))(x)
         u = F.relu(nn.BatchNorm2d(num_channels)(u))
 
-        z = nn.Conv2d(num_channels, num_channels, (3, 3), padding=(1, 1))(u)
+        z = nn.Conv2d(num_channels, self.filters, (3, 3), padding=(1, 1))(u)
         z = F.relu(x + nn.BatchNorm2d(num_channels)(z))
 
         raise z
