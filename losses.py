@@ -44,10 +44,10 @@ def mc_gaussian_elbo(x1, x2, z, sigma, mu, logvar):
 
     reconstruction = 1 / (2 * sigma) * torch.linalg.norm(x2 - x1) ** 2
 
-    d = z.shape[0]
     log_posterior = torch.distributions.MultivariateNormal(
-        mu, torch.exp(logvar) * torch.eye(d)
+        mu, torch.diag(torch.exp(logvar))
     ).log_prob(z)
+    d = z.shape[0]
     log_prior = torch.distributions.MultivariateNormal(
         torch.zeros(d), torch.eye(d)
     ).log_prob(z)
