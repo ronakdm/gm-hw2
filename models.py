@@ -25,7 +25,6 @@ class ConvnetBlock(nn.Module):
         self.filters = filters
 
     def forward(self, x):
-
         #
         # Problem 5a: Implement a residual convnet block as described in Lecture 7.
         #             Use a kernel size of 3. Do not implement 1x1 convolutions.
@@ -39,7 +38,7 @@ class ConvnetBlock(nn.Module):
         z = nn.Conv2d(num_channels, self.filters, (3, 3), padding=(1, 1))(u)
         z = F.relu(x + nn.BatchNorm2d(num_channels)(z))
 
-        raise z
+        return z
 
 
 class MaskedConvnetBlock(nn.Module):
