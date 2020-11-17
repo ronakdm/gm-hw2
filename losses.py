@@ -74,7 +74,21 @@ def discrete_output_elbo(x1, x2, z, logqzx):
     #             Use a (1-point) monte carlo estimate of the KL divergence.
     #
 
-    # raise NotImplementedError
-    reconstruction, divergence = 0, 0
+    # Calls in binaryvae.ipynb:
+    # g = models.DiscreteVAEDecoder(autoregress=autoregress).cuda()
+    # f = models.VAEEncoder().cuda()
+    # loss_func = losses.discrete_output_elbo
+    # z, logqzx, _, _ = f(x, epsilon)
+    # recon,div = loss_func(g(z,x),x,z,logqzx)
+    # x1 = g(z,x) = g(z) = p_theta(x | z)
+    # x2 = x
+    # z = z
+    # logqzx = log q(z | x) # [n*1] for each of the x's in the n-batch
+
+    print(x1.shape)
+    print(x2.shape)
+    reconstruction = 0
+
+    divergence = 0
 
     return reconstruction, divergence

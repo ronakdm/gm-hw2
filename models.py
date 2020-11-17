@@ -35,8 +35,6 @@ class ConvnetBlock(nn.Module):
         #             Use a kernel size of 3. Do not implement 1x1 convolutions.
         #
 
-        batch_size, num_channels, height, width = x.shape
-
         u = self.conv1(x)
         u = F.relu(self.bn1(u))
 
@@ -50,6 +48,12 @@ class MaskedConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
         super(MaskedConvnetBlock, self).__init__(*args, **kwargs)
 
+        self.maskedconv1 = MaskedConv2d(filters, filters, (3, 3), padding=(1, 1))
+        self.bn1 = nn.BatchNorm2d(filters)
+
+        self.maskedconv2 = MaskedConv2d(filters, filters, (3, 3), padding=(1, 1))
+        self.bn2 = nn.BatchNorm2d(filters)
+
     def forward(self, x):
 
         #
@@ -59,7 +63,13 @@ class MaskedConvnetBlock(nn.Module):
         #             You'll want to use mask-type B.
         #
 
-        raise NotImplementedError
+        u = self.conv1(x)
+        u = F.relu(self.bn1(u))
+
+        z = self.conv2(u)
+        z = F.relu(x + self.bn2(z))
+
+        return z
 
 
 class PixelCNN(nn.Module):
