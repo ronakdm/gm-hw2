@@ -19,7 +19,7 @@ def gaussian_elbo(x1, x2, z, sigma, mu, logvar):
     # sigma = sigma(p_theta(x|z))
     # logvar = log(sigma^2(q_phi(z|x)))
 
-    reconstruction = 1 / (2 * sigma) * torch.linalg.norm(x2 - x1) ** 2
+    reconstruction = 1 / (2 * sigma ** 2) * torch.linalg.norm(x2 - x1) ** 2
     divergence = 1 / 2 * torch.sum(torch.exp(logvar) + mu ** 2 - 1 - logvar)
 
     return reconstruction, divergence
@@ -42,7 +42,7 @@ def mc_gaussian_elbo(x1, x2, z, sigma, mu, logvar):
     # sigma = sigma(p_theta(x|z))
     # logvar = log(sigma^2(q_phi(z|x)))
 
-    reconstruction = 1 / (2 * sigma) * torch.linalg.norm(x2 - x1) ** 2
+    reconstruction = 1 / (2 * sigma ** 2) * torch.linalg.norm(x2 - x1) ** 2
 
     log_posterior = torch.distributions.MultivariateNormal(
         mu, torch.diag_embed(torch.exp(logvar))
@@ -57,7 +57,8 @@ def mc_gaussian_elbo(x1, x2, z, sigma, mu, logvar):
             torch.zeros(d), torch.eye(d)
         ).log_prob(z)
 
-    divergence = torch.sum(log_posterior - log_prior)
+    scale = 0.4  # TODO: compare this to John's implementation
+    divergence = scale * torch.sum(log_posterior - log_prior)
 
     return reconstruction, divergence
 
