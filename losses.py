@@ -80,15 +80,13 @@ def discrete_output_elbo(x1, x2, z, logqzx):
     # loss_func = losses.discrete_output_elbo
     # z, logqzx, _, _ = f(x, epsilon)
     # recon,div = loss_func(g(z,x),x,z,logqzx)
-    # x1 = g(z,x) = g(z) = p_theta(x | z)
+    # x1 = g(z,x) = g(z)
     # x2 = x
     # z = z
-    # logqzx = log q(z | x) # [n*1] for each of the x's in the n-batch
+    # logqzx = log q(z | x) # [n*1] for each of the z's
 
-    print(x1.shape)
-    print(x2.shape)
-    reconstruction = 0
-
-    divergence = 0
+    reconstruction = cross_entropy(x1, x2)
+    qzx = torch.exp(logqzx)
+    divergence = -cross_entropy(qzx, qzx)
 
     return reconstruction, divergence
