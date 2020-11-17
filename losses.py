@@ -86,7 +86,17 @@ def discrete_output_elbo(x1, x2, z, logqzx):
     # logqzx = log q(z | x) # [n*1] for each of the z's
 
     reconstruction = cross_entropy(x1, x2)
-    qzx = torch.exp(logqzx)
-    divergence = -cross_entropy(qzx, qzx)
+
+    d = z.shape[1]
+    if torch.cuda.is_available():
+        log_prior = torch.distributions.MultivariateNormal(
+            torch.zeros(d).cuda(), torch.eye(d).cuda()
+        ).log_prob(z)
+    else:
+        log_prior = torch.distributions.MultivariateNormal(
+            torch.zeros(d), torch.eye(d)
+        ).log_prob(z)
+
+    divergence = torch.sum(logqzx - log_prior)
 
     return reconstruction, divergence
