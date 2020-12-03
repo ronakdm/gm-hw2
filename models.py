@@ -48,11 +48,15 @@ class MaskedConvnetBlock(nn.Module):
     def __init__(self, filters, *args, **kwargs):
         super(MaskedConvnetBlock, self).__init__(*args, **kwargs)
 
-        self.maskedconv1 = MaskedConv2d(filters, filters, (3, 3), padding=(1, 1))
-        self.bn1 = nn.BatchNorm2d(filters)
+        self.maskedconv1 = MaskedConv2d(
+            "B", in_channels=filters, out_channels=filters, kernel_size=3, padding=1
+        )
+        self.bn1 = nn.BatchNorm2d(num_features=filters)
 
-        self.maskedconv2 = MaskedConv2d(filters, filters, (3, 3), padding=(1, 1))
-        self.bn2 = nn.BatchNorm2d(filters)
+        self.maskedconv2 = MaskedConv2d(
+            "B", in_channels=filters, out_channels=filters, kernel_size=3, padding=1
+        )
+        self.bn2 = nn.BatchNorm2d(num_features=filters)
 
     def forward(self, x):
 
@@ -63,10 +67,10 @@ class MaskedConvnetBlock(nn.Module):
         #             You'll want to use mask-type B.
         #
 
-        u = self.conv1(x)
+        u = self.maskedconv1(x)
         u = F.relu(self.bn1(u))
 
-        z = self.conv2(u)
+        z = self.maskedconv2(u)
         z = F.relu(x + self.bn2(z))
 
         return z
