@@ -88,8 +88,9 @@ def discrete_output_elbo(x1, x2, z, logqzx):
     reconstruction = cross_entropy(x1, x2)
 
     d = z.shape[1]
+    pi = 3.14159265358979323846
 
-    log_prior = -(d / 2) * torch.log(2 * torch.pi) - (1 / 2) * torch.norm(z) ** 2
+    log_prior = -(d / 2) * torch.log(2 * pi) - (1 / 2) * torch.norm(z) ** 2
     divergence = torch.sum(logqzx - log_prior)
 
     return reconstruction, divergence
