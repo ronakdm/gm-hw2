@@ -1,6 +1,5 @@
 import torch
 import torch.nn.functional as F
-import math
 
 
 def gaussian_elbo(x1, x2, z, sigma, mu, logvar):
@@ -90,7 +89,9 @@ def discrete_output_elbo(x1, x2, z, logqzx):
 
     d = z.shape[1]
 
-    log_prior = -(d / 2) * math.log(2 * math.pi) - (1 / 2) * torch.norm(z) ** 2
+    log2pi = 0.79817986835
+
+    log_prior = -(d / 2) * log2pi - (1 / 2) * torch.norm(z) ** 2
     divergence = torch.sum(logqzx - log_prior)
 
     return reconstruction, divergence
