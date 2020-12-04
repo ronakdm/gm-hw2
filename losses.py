@@ -92,6 +92,6 @@ def discrete_output_elbo(x1, x2, z, logqzx):
     log2pi = 0.79817986835
 
     log_prior = -(d / 2) * log2pi - (1 / 2) * torch.norm(z) ** 2
-    divergence = torch.sum(-logqzx - log_prior)
+    divergence = torch.sum(-logqzx - log_prior) / x1.shape[0]
 
     return reconstruction, divergence
