@@ -248,7 +248,13 @@ class VAEEncoder(nn.Module):
             #             While calculating z, accumulate a calculation of its probability.
             #
 
-            raise NotImplementedError
+            m, s = flow.forward(z, h)
+            v = F.sigmoid(s)
+            z = v * z + (1 - v) * m
+
+            sigma = 1 / v
+            # Sum log by dimension.
+            logqzx -= torch.log(sigma).view(-1, 49).sum(1)
 
         return z.view(-1, 49), logqzx, mu.view(-1, 49), logvar.view(-1, 49)
 
