@@ -256,5 +256,7 @@ class VAEEncoder(nn.Module):
             # Sum log by dimension.
             logqzx -= torch.log(sigma).view(-1, 49).sum(1)
 
+            z = z.flip([2, 3])
+
         return z.view(-1, 49), logqzx, mu.view(-1, 49), logvar.view(-1, 49)
 
